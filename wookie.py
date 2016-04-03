@@ -256,6 +256,11 @@ class _wookie(SimpleIRCClient):
                 chan, '{0}{2}{3}PBX Information:{1}{0} SIP Address:{4} || DID Number: {5}'.format(
                     self.BOLD, self.END, self.UNDERLINE, self.BLUE, freeswitch['sip'], freeswitch['did']))
 
+        if '.song' == arguments[0].lower():
+            serv.privmsg(
+                chan, '{0}{2}{3}Now Playing:{1}{0}'.format(
+                    self.BOLD, self.END, self.UNDERLINE, self.BLUE, ))
+
         if '.conf' == arguments[0].lower():
             serv.privmsg(
                 chan, '{0}{2}{3}Conference Extension: {1}{0}{4} Pin: {5}'.format(
