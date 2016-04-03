@@ -258,8 +258,12 @@ class _wookie(SimpleIRCClient):
 
         if '.song' == arguments[0].lower():
             serv.privmsg(
-                chan, '{0}{2}{3}Now Playing:{1}{0}'.format(
-                    self.BOLD, self.END, self.UNDERLINE, self.BLUE, ))
+                chan, self.queue)
+
+        if '.url' == arguments[0].lower():
+            serv.privmsg(
+                chan, '{0}{2}ShoutCast URL: {1}{0}{3}'.format(
+                    self.BOLD, self.END, self.BLUE, shoutcast['shoutcast_feed']))
 
         if '.conf' == arguments[0].lower():
             serv.privmsg(
@@ -270,7 +274,7 @@ class _wookie(SimpleIRCClient):
             serv.privmsg(
                 chan, '{0}{2}{3}Available commands:{1}{0} .help || '
                       '.version || .uptime || '
-                      '.info || .conf{1}'.format(
+                      '.info || .url || .conf{1}'.format(
                           self.BOLD, self.END, self.UNDERLINE, self.BLUE))
 
         if '.version' == arguments[0].lower():
