@@ -6,3 +6,5 @@ This is based off the Wookie IRC Bot and heavily modified by Deshi and Arisance
 irc.hackthissite.org #coffeesh0p if you want to ask Deshi any questions.
 This is written for python3 start the bot with python3 wookie.py start
 
+#Usage
+rename config_sample.py to config.py edit and rock in roll.
