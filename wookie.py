@@ -258,7 +258,7 @@ class _wookie(SimpleIRCClient):
 
         if '.song' == arguments[0].lower():
             serv.privmsg(
-                chan, )
+                chan, self.shoutcast.getSongTitle())
 
         if '.url' == arguments[0].lower():
             serv.privmsg(
