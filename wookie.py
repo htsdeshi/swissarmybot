@@ -258,7 +258,7 @@ class _wookie(SimpleIRCClient):
 
         if '.song' == arguments[0].lower():
             serv.privmsg(
-                chan, self.queue)
+                chan, )
 
         if '.url' == arguments[0].lower():
             serv.privmsg(
