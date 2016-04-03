@@ -2,27 +2,39 @@
 # -*- coding: utf-8 -*-
 
 wookie = {
-    'bot_owner': ['owners nickname'],
+    'bot_owner': ['Deshi'],
     'start_bot': 'screen -dmS wookie',
     'kill_bot': 'screen -X -S wookie kill',
     'mode': 'standard'
 }
 
 network = {
-    'server': 'irc.server.com',
+    'server': 'irc.hackthissite.org',
     'port': 6667,
     'SSL': False,
     'ipv6': False,
-    'channels': ['#channel', '#channel', '#channel'],
+    'channels': ['#pbx', '#deshi', '#wickedradio'],
     'bot_nick': 'SwissArmy',
     'bot_name': 'Swiss Army IRC bot by Deshi & Arisance '
                 '',
-    'password': 'nickserv password leave blank for none'
+    'password': 'master'
 }
-#change to the conference extension
-conferences = [
-    "4224"
-]
+shoutcast = {
+    'server': "http://142.4.217.133:9203/stats?sid=1&mode=viewxml&page=0",
+    'pull_delay': 1,
+    'channels': ['#wickedradio']
+
+}
+freeswitch = {
+    'server': "127.0.0.1",
+              'port': 8021,
+              'password': "ClueCon",
+              'conference': 4224,
+              'pin': 1337,
+              'sip': "mud.chickenkiller.com",
+              'did': "(929)223-2241",
+              'channels': ['#pbx']
+}
 
 feeds = {
     'queue_delay': .5,

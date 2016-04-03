@@ -17,7 +17,8 @@ from threading import (Thread, Event)
 from datetime import (datetime, timedelta)
 from django.utils.encoding import smart_bytes
 from urllib.request import (urlopen, URLError, HTTPError)
-from config import (feeds, wookie, network, api, blacklist)
+from config import (
+    feeds, wookie, network, api, blacklist, shoutcast, freeswitch)
 from CallMonitor import CallMonitor
 from shoutcast import Shoutcast
 
@@ -43,10 +44,7 @@ class Queue_Manager(Thread):
         self.queue.append((msg.strip(), target))
         self.event.set()
 
-#change call monitor IP to FreeSwitch server IP
-#change 4224 to the extension for your conference
-#change #pbx to the irc channel you want to output to
-#change shoutcast_url to the url to your shoutcast stats url
+
 class _wookie(SimpleIRCClient):
 
     def __init__(self):
@@ -54,11 +52,9 @@ class _wookie(SimpleIRCClient):
         self.start_time = time.time()
         self.queue = Queue_Manager(self.connection)
         self.callMonitor = CallMonitor(
-            ("127.0.0.1", 8021), "4224", self.queue, "#pbx")
-        shoutcast_url = "http://142.4.217.133:9203/stats?sid=1&mode=viewxml&page=0"
-        shoutcast_delay = 10  # seconds to wait before polling for new songs
+            (freeswitch["server"], freeswitch["port"]), freeswitch["password"], freeswitch["conference"], self.queue, freeswitch["channels"])
         self.shoutcast = Shoutcast(
-            shoutcast_url, shoutcast_delay, self.queue, ["#wickedradio"])
+            shoutcast["server"], shoutcast["pull_delay"], self.queue, shoutcast["channels"])
 
         self.BLACK = '\x0301'
         self.BLUE = '\x0302'
@@ -254,19 +250,16 @@ class _wookie(SimpleIRCClient):
                 serv.disconnect()
                 print(error)
                 sys.exit(1)
-#change the following for the public information triggers
+
         if '.info' == arguments[0].lower():
             serv.privmsg(
-                chan, '{0}{2}{3}PBX Information:{1}{0} SIP Address sip.domain.com ||'
-                ' DID Number: (XXX)XXX-XXXX'
-                .format(
-                    self.BOLD, self.END, self.UNDERLINE, self.BLUE))
+                chan, '{0}{2}{3}PBX Information:{1}{0} SIP Address:{4} || DID Number: {5}'.format(
+                    self.BOLD, self.END, self.UNDERLINE, self.BLUE, freeswitch['sip'], freeswitch['did']))
 
         if '.conf' == arguments[0].lower():
             serv.privmsg(
-                chan, '{0}{2}{3}Conference Extension:{1}{0} XXXX PIN: XXXX'
-                      .format(
-                          self.BOLD, self.END, self.UNDERLINE, self.BLUE))
+                chan, '{0}{2}{3}Conference Extension: {1}{0}{4} Pin: {5}'.format(
+                    self.BOLD, self.END, self.UNDERLINE, self.BLUE, freeswitch['conference'], freeswitch['pin']))
 
         if '.help' == arguments[0].lower():
             serv.privmsg(

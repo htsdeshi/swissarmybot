@@ -3,18 +3,20 @@ import re
 import socket
 import threading
 
-#change below the auth ClueCon to the username and password for your event socket settings for FreeSwitch
+
 class CallMonitor(object):
 
-    def __init__(self, address, conferenceNumber, queue, irc_channel):
+    def __init__(self, address, password, conferenceNumber, queue, irc_channels):
         self.conferenceNumber = conferenceNumber
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect(address)
-        self.sock.send(b'auth ClueCon\n\n')
+        authorization_string = b'auth ' + \
+            password.encode('utf-8') + b'\n\n'
+        self.sock.send(authorization_string)
         self.sock.send(b'events json CHANNEL_ANSWER\n\n')
         self.log = open("call.log", "wb")
         self.queue = queue
-        self.irc_channel = irc_channel
+        self.irc_channels = irc_channels
         self.monitor_thread = threading.Thread(
             target=CallMonitor.run, args=(self,))
         self.monitor_thread.daemon = True
@@ -63,24 +65,12 @@ class CallMonitor(object):
                 if re.search(r'^[0-9]{11}$', caller):
                     caller = "x-xxx-xxx-" + caller[7:]
                 try:
-                    self.queue.send(
-                        caller + " joined the conference", self.irc_channel)
+                    for channel in self.irc_channels:
+                        self.queue.send(
+                            caller + " joined the conference", channel)
                     #print("Caller connected: ",caller)
                 except:
                     # print(data)
                     pass
             self.log.write(data)
             data = data[startLocation + length:]
-
-#change the IP to the IP of your FreeSwitch Server
-#change 4224 to the extension of your main conference 
-#change #pbx to the IRC channel name to announce to
-def main():
-    CallMonitor(("127.0.0.1", 8021), "4224", "queue", "#pbx") 
-    print("Press CTRL-C to quit.")
-    while True:
-        pass
-
-
-if __name__ == "__main__":
-    main()
