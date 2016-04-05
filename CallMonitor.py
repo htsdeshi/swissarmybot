@@ -66,7 +66,7 @@ class CallMonitor(object):
                     caller = "x-xxx-xxx-" + caller[7:]
                 try:
                     for channel in self.irc_channels:
-                        self.serv.send(
+                        self.queue.send(
                             caller + " joined the conference", channel)
                     #print("Caller connected: ",caller)
                 except:
