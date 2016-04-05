@@ -35,21 +35,3 @@ freeswitch = {
               'did': "(xxx)xxx-xxxx",
               'channels': ['#channel']
 }
-
-feeds = {
-    'queue_delay': .5,
-    'announce_delay': 5.0,
-    'request_delay': 5.0,
-    'announce': [''],
-    'request': ['']
-}
-
-api = {
-    'api_url': '',
-    'authkey': ''
-}
-
-blacklist = {
-    'announce': ['test1', 'test2', 'test3'],
-    'request': ['test1', 'test2', 'test3']
-}
