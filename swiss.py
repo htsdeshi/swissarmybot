@@ -17,7 +17,7 @@ from datetime import (timedelta)
 from django.utils.encoding import smart_bytes
 from urllib.request import (URLError, HTTPError)
 from config import (
-    wookie, network, shoutcast, freeswitch)
+    swiss, network, shoutcast, freeswitch)
 from CallMonitor import CallMonitor
 from shoutcast import Shoutcast
 
@@ -44,7 +44,7 @@ class Queue_Manager(Thread):
         self.event.set()
 
 
-class _wookie(SimpleIRCClient):
+class _swiss(SimpleIRCClient):
 
     def __init__(self):
         irc.client.SimpleIRCClient.__init__(self)
@@ -102,8 +102,8 @@ class _wookie(SimpleIRCClient):
                 ev.source.split('!')[0], network['bot_name'])
 
     def history_manager(self):
-        home = '{}/.wookie_logs'.format(os.environ.get('HOME'))
-        self.wookie_path = os.path.dirname(os.path.realpath(__file__))
+        home = '{}/.swiss_logs'.format(os.environ.get('HOME'))
+        self.swiss_path = os.path.dirname(os.path.realpath(__file__))
         self.announce_entries = '{}/announce-entries'.format(home)
         self.request_entries = '{}/request-entries'.format(home)
         self.irc_entries = '{}/irc-entries'.format(home)
@@ -118,13 +118,13 @@ class _wookie(SimpleIRCClient):
 
     def restart_bot(self, serv, ev):
         serv.disconnect()
-        if wookie['mode'] == 'screen':
+        if swiss['mode'] == 'screen':
             current_screen = self.get_current_screen()
-            os.system('{0} {1}/./wookie.py run && screen -X -S {2} kill'
-                      .format(wookie['start_bot'], self.wookie_path,
+            os.system('{0} {1}/./swiss.py run && screen -X -S {2} kill'
+                      .format(swiss['start_bot'], self.swiss_path,
                               current_screen))
         else:
-            os.system('{}/./wookie.py start'.format(self.wookie_path))
+            os.system('{}/./swiss.py start'.format(self.swiss_path))
         sys.exit(1)
 
     def get_current_screen(self):
@@ -132,7 +132,7 @@ class _wookie(SimpleIRCClient):
         screen_lines = smart_bytes(
             screen_list.replace('\t', '')).splitlines()
         for screen in screen_lines:
-            if 'wookie' in screen:
+            if 'swiss' in screen:
                 current_screen = screen.split('.')[0]
         return current_screen
 
@@ -171,7 +171,7 @@ class _wookie(SimpleIRCClient):
         author = ev.source
         message = ev.arguments[0].strip()
         arguments = message.split(' ')
-        if author in wookie['bot_owner']:
+        if author in swiss['bot_owner']:
             if '.say' == arguments[0] and len(arguments) > 2:
                 serv.privmsg(
                     arguments[1], message.replace(arguments[0], '')
@@ -196,14 +196,14 @@ class _wookie(SimpleIRCClient):
         FILE.close()
         print(record)
         chan = ev.target
-        if author in wookie['bot_owner']:
+        if author in swiss['bot_owner']:
             try:
                 if ev.arguments[0].lower() == '.restart':
                     self.restart_bot(serv, ev)
                 if ev.arguments[0].lower() == '.quit':
                     serv.disconnect()
-                    if not wookie['mode']:
-                        os.system(wookie['kill_bot'])
+                    if not swiss['mode']:
+                        os.system(swiss['kill_bot'])
                     sys.exit(1)
             except OSError as error:
                 serv.disconnect()
@@ -264,25 +264,25 @@ class _wookie(SimpleIRCClient):
 
 def main():
 
-    usage = './wookie.py <start> or <screen>\n\n'\
-        '<start> to run wookie in standard mode\n'\
-        '<screen> to run wookie in detached screen'
+    usage = './swiss.py <start> or <screen>\n\n'\
+        '<start> to run swiss in standard mode\n'\
+        '<screen> to run swiss in detached screen'
     parser = optparse.OptionParser(usage=usage)
     (_, args) = parser.parse_args()
     if len(args) == 1 and (
             args[0] == 'start' or
             args[0] == 'screen' or
             args[0] == 'run'):
-        bot = _wookie()
+        bot = _swiss()
     else:
         parser.print_help()
         parser.exit(1)
 
     try:
         if args[0] == 'screen':
-            wookie['mode'] = 'screen'
-            os.system('{0} {1}/./wookie.py run'.format(
-                wookie['start_bot'], os.path.dirname(
+            swiss['mode'] = 'screen'
+            os.system('{0} {1}/./swiss.py run'.format(
+                swiss['start_bot'], os.path.dirname(
                     os.path.realpath(__file__))))
             sys.exit(1)
         bot.connect(
