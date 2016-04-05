@@ -9,16 +9,15 @@ import socket
 import calendar
 import subprocess
 import optparse
-import threading
-import feedparser
-from json import loads
+
+
 from irc.client import SimpleIRCClient
 from threading import (Thread, Event)
-from datetime import (datetime, timedelta)
+from datetime import (timedelta)
 from django.utils.encoding import smart_bytes
-from urllib.request import (urlopen, URLError, HTTPError)
+from urllib.request import (URLError, HTTPError)
 from config import (
-    feeds, wookie, network, api, blacklist, shoutcast, freeswitch)
+    wookie, network, shoutcast, freeswitch)
 from CallMonitor import CallMonitor
 from shoutcast import Shoutcast
 
@@ -90,10 +89,6 @@ class _wookie(SimpleIRCClient):
             serv.disconnect()
             print(error)
             sys.exit(1)
-
-    def on_rss_entry(self, text):
-        for channel in network['channels']:
-            self.queue.send(text, channel)
 
     def on_kick(self, serv, ev):
         serv.join(ev.target)
@@ -171,42 +166,6 @@ class _wookie(SimpleIRCClient):
         else:
             pretime = '{0}ans {1}jours after Pre'.format(years, days)
         return pretime
-
-    def search_release(self, serv, ev, message, chan):
-        data = loads(urlopen('{0}{1}{2}{3}{4}{5}'.format(
-            api['api_url'], 'torrent/search&ak=',
-            api['authkey'], '&q=',
-            smart_bytes(message[5:].replace(' ', '+').replace('.', '+')),
-            '&nb=1'), None, 5.0).read())
-
-        id_field = smart_bytes(data[0]['id_field'])
-        title = smart_bytes(data[0]['name']).replace(' ', '.')
-        url = '{0}{1}{2}/{3}'.format(
-            api['api_url'].replace('api/', ''),
-            'torrent/', id_field, title)
-        completed = smart_bytes(data[0]['times_completed'])
-        leechers = smart_bytes(data[0]['leechers'])
-        seeders = smart_bytes(data[0]['seeders'])
-        added = smart_bytes(data[0]['added'])
-        comments = smart_bytes(data[0]['comments'])
-        size = self.get_nice_size(int(data[0]['size']))
-        predate = smart_bytes(data[0]['pretime'])
-        pretime = ''
-        if predate != '0':
-            releaseDate = datetime.strptime(
-                added, '%Y-%m-%d %H:%M:%S')
-            pre = (self.timestamp(releaseDate) - (int(predate) + 3600))
-            pretime = ' | {0}Pretime:{1} {2}'.format(
-                self.BOLD, self.END, self.get_rls_pretime(int(pre)))
-
-        serv.privmsg(chan, '{0}{1}:{2} {3}'.format(
-            self.BOLD, title, self.END, url))
-        serv.privmsg(
-            chan, '{7}Added on:{8} {0}{1} | {7}Size:{8} {2} '
-            '| {7}Seeders:{8} {3} | {7}Leechers:{8} {4} '
-            '| {7}Completed:{8} {5} | {7}Comments:{8} {6}'
-            .format(added, pretime, size, seeders,
-                    leechers, completed, comments, self.BOLD, self.END))
 
     def on_privmsg(self, serv, ev):
         author = ev.source
@@ -301,79 +260,6 @@ class _wookie(SimpleIRCClient):
                     chan, "{0}{1}[ERROR]{2} API timeout...".format(
                         self.BOLD, self.RED, self.END))
                 pass
-
-    def announce_refresh(self):
-        FILE = open(self.announce_entries, "r")
-        filetext = FILE.read()
-        FILE.close()
-
-        for feed in feeds['announce']:
-            d = feedparser.parse(feed)
-        for entry in d.entries:
-            id_announce = '{0}{1}'.format(smart_bytes(entry.link),
-                                          smart_bytes(entry.title))
-            if id_announce not in filetext and\
-                    any([x not in id_announce for x in blacklist['announce']]):
-                url = smart_bytes(entry.link)
-                title = smart_bytes(
-                    entry.title).split(' - ', 1)[1].replace(' ', '.')
-                size = smart_bytes(entry.description).split(
-                    '|')[1].replace('Size :', '').strip()
-                category = smart_bytes(entry.title).split(
-                    ' -', 1)[0].replace(' ', '-')
-                if len(entry.description.split('|')) == 5:
-                    pretime = ''
-                else:
-                    releaseDate = datetime.strptime(smart_bytes(
-                        entry.description).split('|')[2].replace(
-                            smart_bytes('Ajouté le :'), '').strip(),
-                        '%Y-%m-%d %H:%M:%S')
-                    preDate = datetime.strptime(smart_bytes(
-                        entry.description).split('|')[5].replace(
-                            'PreTime :', '').strip(),
-                        '%Y-%m-%d %H:%M:%S')
-                    pre = (
-                        self.timestamp(releaseDate) - self.timestamp(preDate))
-                    pretime = self.get_rls_pretime(pre)
-
-                self.on_rss_entry(
-                    '{5}{6}[{0}] {10}{1}{2} {8}[{3}] {9}{4}{7}'.format(
-                        category, url, title, size, pretime, self.BOLD,
-                        self.RED, self.END, self.GREEN, self.YELLOW,
-                        self.BLACK))
-                FILE = open(self.announce_entries, "a")
-                FILE.write("{}\n".format(id_announce))
-                FILE.close()
-
-        threading.Timer(
-            feeds['announce_delay'], self.announce_refresh).start()
-
-    def request_refresh(self):
-        FILE = open(self.request_entries, "r")
-        filetext = FILE.read()
-        FILE.close()
-
-        for feed in feeds['request']:
-            d = feedparser.parse(feed)
-        for entry in d.entries:
-            id_request = '{0}{1}'.format(
-                smart_bytes(entry.link),
-                smart_bytes(entry.title).split(' - ')[0].replace(' ', '.'))
-            if id_request not in filetext and\
-                    any([x not in id_request for x in blacklist['request']]):
-                title = smart_bytes(
-                    entry.title).split(' - ', 1)[0].replace(' ', '.')
-                url = smart_bytes(entry.link)
-                self.on_rss_entry(
-                    '{2}{4}[REQUEST]{3} {0}: {6}{1}{5}'.format(
-                        title, url, self.BOLD, self.BLACK,
-                        self.PURPLE, self.END, self.BLUE))
-                FILE = open(self.request_entries, "a")
-                FILE.write('{}\n'.format(id_request))
-                FILE.close()
-
-        threading.Timer(
-            feeds['request_delay'], self.request_refresh).start()
 
 
 def main():
