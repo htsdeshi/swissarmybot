@@ -7,8 +7,8 @@ from config import (freeswitch)
 
 class CallMonitor(object):
 
-    def __init__(self, address, password, conferenceNumber, queue, irc_channels):
-        self.conferenceNumber = conferenceNumber
+    def __init__(self, address, password, conference, queue, irc_channels):
+        self.conferenceNumber = conference
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect(address)
         authorization_string = b'auth ' + \
@@ -61,7 +61,7 @@ class CallMonitor(object):
                 data += self.sock.recv(4096)
 
             event = self.getEvent(data[startLocation:startLocation + length])
-            if event["variable_origination_callee_id_name"] == '4224':
+            if event["variable_origination_callee_id_name"] == freeswitch["conference"]:
                 caller = event["Caller-Orig-Caller-ID-Name"]
                 if re.search(r'^[0-9]{11}$', caller):
                     caller = "x-xxx-xxx-" + caller[7:]
