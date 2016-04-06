@@ -36,10 +36,12 @@ class CallMonitor(object):
         pos = data.decode('utf-8').find(ct)
         if pos > -1:
             pos += len(ct)
+
         return pos
 
     @staticmethod
     def getEvent(data):
+
         return json.loads(data.decode('utf-8'))
 
     @staticmethod
@@ -60,15 +62,17 @@ class CallMonitor(object):
                 data += self.sock.recv(4096)
 
             event = self.getEvent(data[startLocation:startLocation + length])
-            if event["variable_origination_callee_id_name"] == self.conferenceNumber:
+
+            if event["variable_origination_callee_id_name"] == '4224':
+
                 caller = event["Caller-Orig-Caller-ID-Name"]
                 if re.search(r'^[0-9]{11}$', caller):
                     caller = "x-xxx-xxx-" + caller[7:]
+
                 try:
-                    for channel in self.irc_channels:
-                        self.queue.send(
-                            caller + " joined the conference", channel)
-                    #print("Caller connected: ",caller)
+                    self.queue.send(
+                        caller + " joined the conference", "#pbx")
+                    #print("Caller connected: ", caller)
                 except:
                     # print(data)
                     pass
