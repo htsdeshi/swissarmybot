@@ -3,8 +3,8 @@
 
 wookie = {
     'bot_owner': ['NickName'],
-    'start_bot': 'screen -dmS wookie',
-    'kill_bot': 'screen -X -S wookie kill',
+    'start_bot': 'screen -dmS swiss',
+    'kill_bot': 'screen -X -S swiss kill',
     'mode': 'standard'
 }
 
