@@ -29,9 +29,9 @@ freeswitch = {
     'server': "127.0.0.1",
               'port': 8021,
               'password': "auth password for event socket",
-              'conference': 1234,
+              'conference': "1234",
               'pin': 1234,
               'sip': "sip address",
               'did': "(xxx)xxx-xxxx",
-              'channels': ['#channel']
+              'channels': "#channel"
 }
