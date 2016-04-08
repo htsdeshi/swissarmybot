@@ -45,6 +45,7 @@ class CallMonitor(object):
             pos += len(ct)
         return pos
 
+
     @staticmethod
     def getEvent(data):
         return json.loads(data.decode('utf-8'))
@@ -66,29 +67,16 @@ class CallMonitor(object):
 
             while len(data) - startLocation < length:
                 data += self.sock.recv(4096)
-# what to verify and print
+
             event = self.getEvent(data[startLocation:startLocation + length])
             if event["variable_origination_callee_id_name"] == self.conference:
                 caller = event["Caller-Orig-Caller-ID-Name"]
                 if re.search(r'^[0-9]{11}$', caller):
-<<<<<<< HEAD
-                    caller = "x-xxx-xxx-xxxx" [:]
-                try:
-
-                    self.queue.send(
-                        caller + " joined the conference", freeswitch["channels"])
-                    #print("Caller connected: ",caller)
-                except:
-                    # print(data)
-                    pass
-
-=======
                     caller = "(" + caller[1:4] + ") xxx-xxxx"
                 for channel in self.channels:
                     try:
                         self.queue.send(caller + " joined the conference", channel)
                     except:
                         print("Exception while sending to the queue")
->>>>>>> branch 'master' of https://github.com/htsdeshi/swissarmybot.git
             self.log.write(data)
             data = data[startLocation + length:]
