@@ -69,11 +69,11 @@ class CallMonitor(object):
                 data += self.sock.recv(4096)
 
             event = self.getEvent(data[startLocation:startLocation + length])
-            if event["variable_origination_callee_id_name"] == self.conference:
+            if event["variable_origination_callee_id_name"] == self.conferenceNumber:
                 caller = event["Caller-Orig-Caller-ID-Name"]
                 if re.search(r'^[0-9]{11}$', caller):
                     caller = "(" + caller[1:4] + ") xxx-xxxx"
-                for channel in self.channels:
+                for channel in self.irc_channels:
                     try:
                         self.queue.send(caller + " joined the conference", channel)
                     except:
