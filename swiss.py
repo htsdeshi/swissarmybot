@@ -18,7 +18,7 @@ from django.utils.encoding import smart_bytes
 from urllib.request import (URLError, HTTPError)
 from config import (
     swiss, network, shoutcast, freeswitch)
-from CallMonitor import CallMonitor
+from CallMonitor import (CallHangMonitor, CallMonitor)
 from shoutcast import Shoutcast
 
 
@@ -51,6 +51,8 @@ class _swiss(SimpleIRCClient):
         self.start_time = time.time()
         self.queue = Queue_Manager(self.connection)
         self.callMonitor = CallMonitor(
+            (freeswitch["server"], freeswitch["port"]), freeswitch["password"], freeswitch["conference"], self.queue, freeswitch["channels"])
+        self.callHangMonitor = CallHangMonitor(
             (freeswitch["server"], freeswitch["port"]), freeswitch["password"], freeswitch["conference"], self.queue, freeswitch["channels"])
         self.shoutcast = Shoutcast(
             shoutcast["server"], shoutcast["pull_delay"], self.queue, shoutcast["channels"])
