@@ -2,26 +2,31 @@ import json
 import re
 import socket
 import threading
-from config import (freeswitch)
 
 
 class CallMonitor(object):
 
     def __init__(self, address, password, conference, queue, irc_channels):
-        self.conferenceNumber = conference
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect(address)
-        authorization_string = b'auth ' + \
-            password.encode('utf-8') + b'\n\n'
-        self.sock.send(authorization_string)
-        self.sock.send(b'events json CHANNEL_ANSWER\n\n')
-        self.log = open("call.log", "wb")
+        self.connect(address, password)
+
+        self.conferenceNumber = conference
         self.queue = queue
         self.irc_channels = irc_channels
+
+        self.log = open("call.log", "wb")
         self.monitor_thread = threading.Thread(
             target=CallMonitor.run, args=(self,))
         self.monitor_thread.daemon = True
         self.monitor_thread.start()
+
+
+    def connect(self, address, password):
+        self.sock.connect(address)
+        authorization_string = 'auth ' + password + '\n\n'
+        self.sock.send(authorization_string.encode('utf-8'))
+        self.sock.send(b'events json CHANNEL_ANSWER\n\n')
+
 
     @staticmethod
     def getLength(data):
@@ -30,6 +35,7 @@ class CallMonitor(object):
         if match is not None:
             return int(match.groups()[0])
         return -1
+
 
     @staticmethod
     def getStartLocation(data):
@@ -42,6 +48,7 @@ class CallMonitor(object):
     @staticmethod
     def getEvent(data):
         return json.loads(data.decode('utf-8'))
+
 
     @staticmethod
     def run(self):
@@ -61,17 +68,14 @@ class CallMonitor(object):
                 data += self.sock.recv(4096)
 
             event = self.getEvent(data[startLocation:startLocation + length])
-            if event["variable_origination_callee_id_name"] == freeswitch["conference"]:
+            if event["variable_origination_callee_id_name"] == self.conference:
                 caller = event["Caller-Orig-Caller-ID-Name"]
                 if re.search(r'^[0-9]{11}$', caller):
-                    caller = "x-xxx-xxx-" + caller[7:]
-                try:
-
-                    self.queue.send(
-                        caller + " joined the conference", freeswitch["channels"])
-                    #print("Caller connected: ",caller)
-                except:
-                    # print(data)
-                    pass
+                    caller = "(" + caller[1:4] + ") xxx-xxxx"
+                for channel in self.channels:
+                    try:
+                        self.queue.send(caller + " joined the conference", channel)
+                    except:
+                        print("Exception while sending to the queue")
             self.log.write(data)
             data = data[startLocation + length:]

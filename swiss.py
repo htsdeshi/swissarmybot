@@ -80,8 +80,6 @@ class _swiss(SimpleIRCClient):
             serv.join(channel)
         try:
             self.history_manager()
-            # self.announce_refresh()
-            # self.request_refresh()
             time.sleep(5)
             self.queue.start()
             self.shoutcast.start()
