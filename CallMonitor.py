@@ -59,12 +59,12 @@ class CallMonitor(object):
 
             while len(data) - startLocation < length:
                 data += self.sock.recv(4096)
-
+# what to verify and print
             event = self.getEvent(data[startLocation:startLocation + length])
             if event["variable_origination_callee_id_name"] == freeswitch["conference"]:
                 caller = event["Caller-Orig-Caller-ID-Name"]
                 if re.search(r'^[0-9]{11}$', caller):
-                    caller = "x-xxx-xxx-" + caller[7:]
+                    caller = "x-xxx-xxx-xxxx" [:]
                 try:
 
                     self.queue.send(
@@ -73,5 +73,6 @@ class CallMonitor(object):
                 except:
                     # print(data)
                     pass
+
             self.log.write(data)
             data = data[startLocation + length:]
