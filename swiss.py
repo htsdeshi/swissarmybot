@@ -23,6 +23,9 @@ from config import (
 from CallMonitor import (CallHangMonitor, CallMonitor)
 from shoutcast import Shoutcast
 
+# gather song request info including nickname who used trigger, artist,
+# and song title, and send via email.
+
 
 class Queue_Manager(Thread):
 
