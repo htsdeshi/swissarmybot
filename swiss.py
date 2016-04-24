@@ -20,6 +20,7 @@ from config import (
     swiss, network, shoutcast, freeswitch)
 from CallMonitor import (CallHangMonitor, CallMonitor)
 from shoutcast import Shoutcast
+from smtplib import SMTP
 
 
 class Queue_Manager(Thread):
@@ -233,12 +234,17 @@ class _swiss(SimpleIRCClient):
             serv.privmsg(
                 chan, '{0}{2}{3}Available commands:{1}{0} .help || '
                       '.version || .uptime || '
-                      '.info || .url || .conf{1}'.format(
+                      '.info || .url || .conf || .request || .song{1}'.format(
                           self.BOLD, self.END, self.UNDERLINE, self.BLUE))
 
         if '.version' == arguments[0].lower():
             serv.privmsg(chan, '{0}{1}{2}{3}'.format(
                 self.BOLD, self.PINK, network['bot_name'], self.END))
+
+        if '.request' == arguments[0].lower():
+            serv.privmsg(
+                chan, '{0}{2}{3}Song has been requested'.format(
+                    self.BOLD, self.END, self.UNDERLINE, self.BLUE))
 
         if '.uptime' == arguments[0].lower():
             uptime_raw = round(time.time() - self.start_time)
