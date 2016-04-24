@@ -1,21 +1,20 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import os
+
 import sys
 import smtplib
 import config
-from email import encoders
-from email.mime.base import MIMEBase
+
 from email.mime.multipart import MIMEMultipart
 
 COMMASPACE = ', '
 
 
 def main():
-    sender = 'joshua@jrb-tech.com'
-    gmail_password = 'password'
-    recipients = ['joshua@jrb-tech.com']
+    sender = config.mail['username']
+    gmail_password = config.mail['password']
+    recipients = config.mail['sendto']
 
     # Create the enclosing (outer) message
     outer = MIMEMultipart()
