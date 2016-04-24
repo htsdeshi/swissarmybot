@@ -5,25 +5,19 @@ import os
 import sys
 import time
 import irc.client
-import socket
 import calendar
 import subprocess
 import optparse
-import smtplib
 import smtp
 
 from irc.client import SimpleIRCClient
 from threading import (Thread, Event)
 from datetime import (timedelta)
 from django.utils.encoding import smart_bytes
-from urllib.request import (URLError, HTTPError)
 from config import (
     swiss, network, shoutcast, freeswitch)
 from CallMonitor import (CallHangMonitor, CallMonitor)
 from shoutcast import Shoutcast
-
-# gather song request info including nickname who used trigger, artist,
-# and song title, and send via email.
 
 
 class Queue_Manager(Thread):
@@ -247,7 +241,7 @@ class _swiss(SimpleIRCClient):
         if '.page' == arguments[0].lower():
             smtp.main()
             serv.privmsg(
-                chan, '{0}{2}{3}Deshi has been paged.'.format(
+                chan, '{0}{2}{3} User has been paged.'.format(
                     self.BOLD, self.END, self.UNDERLINE, self.BLUE))
 
         if '.uptime' == arguments[0].lower():
