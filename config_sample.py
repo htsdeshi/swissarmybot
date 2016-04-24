@@ -39,7 +39,7 @@ freeswitch = {
 
 mail = {
     'server': "smtp.gmail.com",
-    'port': "465",
+    'sendto': "email address to send mail to",
     'password': "password",
-    'username': "email address for gmail"
+    'username': "email address for gmail account"
 }
