@@ -255,21 +255,6 @@ class _swiss(SimpleIRCClient):
             serv.privmsg(chan, '{0}{3}[UPTIME]{4} {2}{1}'.format(
                 self.BOLD, self.END, uptime, self.TEAL, self.BLACK))
 
-        if '.get' == arguments[0].lower() and len(arguments) > 1:
-            try:
-                self.search_release(serv, ev, message, chan)
-            except (HTTPError, URLError, KeyError,
-                    ValueError, TypeError, AttributeError):
-                serv.privmsg(
-                    chan, '{0}Nothing found, sorry about this.{1}'.format(
-                        self.BOLD, self.END))
-                pass
-            except socket.timeout:
-                serv.privmsg(
-                    chan, "{0}{1}[ERROR]{2} API timeout...".format(
-                        self.BOLD, self.RED, self.END))
-                pass
-
 
 def main():
 
