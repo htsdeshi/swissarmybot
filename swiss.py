@@ -235,7 +235,7 @@ class _swiss(SimpleIRCClient):
             serv.privmsg(
                 chan, '{0}{2}{3}Available commands:{1}{0} .help || '
                       '.version || .uptime || '
-                      '.info || .url || .conf || .request || .song{1}'.format(
+                      '.info || .url || .conf || .request artist song || .song{1}'.format(
                           self.BOLD, self.END, self.UNDERLINE, self.BLUE))
 
         if '.version' == arguments[0].lower():
