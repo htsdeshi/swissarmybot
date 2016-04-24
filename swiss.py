@@ -241,7 +241,7 @@ class _swiss(SimpleIRCClient):
         if '.page' == arguments[0].lower():
             smtp.main()
             serv.privmsg(
-                chan, '{0}{2}{3} User has been paged.'.format(
+                chan, '{0}{2}{3}User has been paged.'.format(
                     self.BOLD, self.END, self.UNDERLINE, self.BLUE))
 
         if '.uptime' == arguments[0].lower():
