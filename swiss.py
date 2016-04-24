@@ -10,7 +10,7 @@ import calendar
 import subprocess
 import optparse
 import smtplib
-
+import smtp
 
 from email.mime.text import MIMEText
 from irc.client import SimpleIRCClient
