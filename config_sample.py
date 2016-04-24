@@ -15,7 +15,7 @@ network = {
     'ipv6': False,
     'channels': ['#channel', '#channel', '#channel'],
     'bot_nick': 'SwissArmy',
-    'bot_name': 'Swiss Army IRC bot by Deshi & Arisance ',
+    'bot_name': 'Swiss Army IRC bot by Deshi & Arisance  Version 1.19',
     'password': 'nickservpassword'
 }
 
