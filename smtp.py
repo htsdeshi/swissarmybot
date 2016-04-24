@@ -27,7 +27,7 @@ def main():
 
     # Send the email
     try:
-        with smtplib.SMTP('smtp.gmail.com', 587) as s:
+        with smtplib.SMTP(config.mail['server'], 587) as s:
             s.ehlo()
             s.starttls()
             s.ehlo()
