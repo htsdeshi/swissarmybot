@@ -9,6 +9,7 @@ import socket
 import calendar
 import subprocess
 import optparse
+import smtplib
 
 
 from irc.client import SimpleIRCClient
@@ -20,7 +21,6 @@ from config import (
     swiss, network, shoutcast, freeswitch)
 from CallMonitor import (CallHangMonitor, CallMonitor)
 from shoutcast import Shoutcast
-from smtplib import SMTP
 
 
 class Queue_Manager(Thread):
