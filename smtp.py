@@ -14,7 +14,7 @@ COMMASPACE = ', '
 
 def main():
     sender = 'joshua@jrb-tech.com'
-    gmail_password = '[password'
+    gmail_password = 'password'
     recipients = ['joshua@jrb-tech.com']
 
     # Create the enclosing (outer) message
