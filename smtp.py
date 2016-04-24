@@ -4,6 +4,7 @@
 import os
 import sys
 import smtplib
+import config
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
