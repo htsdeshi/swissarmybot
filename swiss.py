@@ -12,6 +12,7 @@ import optparse
 import smtplib
 
 
+from email.mime.text import MIMEText
 from irc.client import SimpleIRCClient
 from threading import (Thread, Event)
 from datetime import (timedelta)
