@@ -18,7 +18,7 @@ def main():
 
     # Create the enclosing (outer) message
     outer = MIMEMultipart()
-    outer['Subject'] = 'WIKD Song Request'
+    outer['Subject'] = 'Page for Deshi'
     outer['To'] = COMMASPACE.join(recipients)
     outer['From'] = sender
     outer.preamble = 'You will not see this in a MIME-aware mail reader.\n'

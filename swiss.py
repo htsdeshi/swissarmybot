@@ -244,9 +244,10 @@ class _swiss(SimpleIRCClient):
             serv.privmsg(chan, '{0}{1}{2}{3}'.format(
                 self.BOLD, self.PINK, network['bot_name'], self.END))
 
-        if '.request' == arguments[0].lower():
+        if '.page' == arguments[0].lower():
+            smtp.main()
             serv.privmsg(
-                chan, '{0}{2}{3}Song has been requested'.format(
+                chan, '{0}{2}{3}Deshi has been paged.'.format(
                     self.BOLD, self.END, self.UNDERLINE, self.BLUE))
 
         if '.uptime' == arguments[0].lower():
