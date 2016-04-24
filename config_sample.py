@@ -36,3 +36,10 @@ freeswitch = {
     'did': '(xxx)xxx-xxxx',
     'channels': ['#channel']
 }
+
+mail = {
+    'server': "smtp.gmail.com",
+    'port': "465",
+    'password': "password",
+    'username': "email address for gmail"
+}
