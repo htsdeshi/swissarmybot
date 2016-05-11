@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-wookie = {
+swiss = {
     'bot_owner': ['NickName'],
     'start_bot': 'screen -dmS swiss',
     'kill_bot': 'screen -X -S swiss kill',
