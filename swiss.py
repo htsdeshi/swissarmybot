@@ -19,8 +19,7 @@ from datetime import (timedelta)
 from django.utils.encoding import smart_bytes
 from urllib.request import (URLError, HTTPError)
 from config import (
-    swiss, network, shoutcast, freeswitch)
-from CallMonitor import (CallHangMonitor, CallMonitor)
+    swiss, network, shoutcast)
 from shoutcast import Shoutcast
 
 # gather song request info including nickname who used trigger, artist,
@@ -55,10 +54,6 @@ class _swiss(SimpleIRCClient):
         irc.client.SimpleIRCClient.__init__(self)
         self.start_time = time.time()
         self.queue = Queue_Manager(self.connection)
-        self.callMonitor = CallMonitor(
-            (freeswitch["server"], freeswitch["port"]), freeswitch["password"], freeswitch["conference"], self.queue, freeswitch["channels"])
-        self.callHangMonitor = CallHangMonitor(
-            (freeswitch["server"], freeswitch["port"]), freeswitch["password"], freeswitch["conference"], self.queue, freeswitch["channels"])
         self.shoutcast = Shoutcast(
             shoutcast["server"], shoutcast["pull_delay"], self.queue, shoutcast["channels"])
 
@@ -215,11 +210,7 @@ class _swiss(SimpleIRCClient):
                 print(error)
                 sys.exit(1)
 
-        if '.info' == arguments[0].lower():
-            serv.privmsg(
-                chan, '{0}{2}{3}PBX Information:{1}{0} SIP Address:{4} || DID Number: {5}'.format(
-                    self.BOLD, self.END, self.UNDERLINE, self.BLUE, freeswitch['sip'], freeswitch['did']))
-
+    
         if '.song' == arguments[0].lower():
             serv.privmsg(
                 chan, self.shoutcast.getSongTitle())
@@ -229,11 +220,7 @@ class _swiss(SimpleIRCClient):
                 chan, '{0}{2}ShoutCast URL: {1}{0}{3}'.format(
                     self.BOLD, self.END, self.BLUE, shoutcast['shoutcast_feed']))
 
-        if '.conf' == arguments[0].lower():
-            serv.privmsg(
-                chan, '{0}{2}{3}Conference Extension: {1}{0}{4} Pin: {5}'.format(
-                    self.BOLD, self.END, self.UNDERLINE, self.BLUE, freeswitch['conference'], freeswitch['pin']))
-
+       
         if '.help' == arguments[0].lower():
             serv.privmsg(
                 chan, '{0}{2}{3}Available commands:{1}{0} .help || '
@@ -309,3 +296,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

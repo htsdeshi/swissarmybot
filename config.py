@@ -9,33 +9,23 @@ swiss = {
 }
 
 network = {
-    'server': 'irc.hackmonkey.us',
+    'server': 'irc.0x00sec.org',
     'port': 6667,
     'SSL': False,
     'ipv6': False,
-    'channels': ['#ctf'],
-    'bot_nick': 'Meow',
+    'channels': ['#radio'],
+    'bot_nick': 'SwissArmy',
     'bot_name': 'Swiss Army IRC bot by Deshi & Arisance  Version 1.19',
-    'password': ''
+    'password': 'master'
 }
 
 shoutcast = {
-    'server': 'shoutcast url for stats',
+    'server': 'http://janus.shoutca.st:9632/stats',
     'pull_delay': 1,
-    'channels': ['#channel']
+    'channels': ['#radio']
 
 }
 
-freeswitch = {
-    'server': '127.0.0.1',
-    'port': 8021,
-    'password': 'auth password for event socket',
-    'conference': '1234',
-    'pin': 1234,
-    'sip': 'sip address',
-    'did': '(xxx)xxx-xxxx',
-    'channels': ['#channel']
-}
 
 mail = {
     'server': "smtp.gmail.com",
@@ -43,3 +33,4 @@ mail = {
     'password': "password",
     'username': "email address for gmail"
 }
+
