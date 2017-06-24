@@ -17,3 +17,4 @@ rename config_sample.py to config.py edit and rock in roll.
 #FUTURE
 adding support for song requests that will utilize web browser for display. Requests will come in 
 via IRC and a web form.
+# shoutIRC # shoutIRC
